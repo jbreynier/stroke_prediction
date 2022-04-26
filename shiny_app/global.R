@@ -11,6 +11,7 @@ library(kableExtra)
 # library(DT)
 library(dplyr)
 library(purrr)
+library(RColorBrewer)
 
 
 stroke_data <- read.csv("../data/stroke_data_cleanedJB.csv")
@@ -31,8 +32,20 @@ list_features_formatted <- str_to_title(list_features)
 list_features_formatted <- gsub("_", " ", 
                       gsub("Avg", "Average", 
                            gsub("Bmi", "BMI", list_features_formatted)))
+# list_features_categorical_formatted <- c("Gender", "Hypertension", "Heart Disease", "Ever Married",
+#                                "Work Type", "Residence Type", "Smoking Status", "Stroke")
+# list_features_continuous_formatted <- c("Age", "Average Glucose Level", "BMI")
 
 
-# Modify inputs in data
-# stroke_data_formatted <- stri_replace_all_regex(
+stroke_data_formatted <- stroke_data
+for (binary_column in c("hypertension", "heart_disease", "stroke")) {
+  stroke_data_formatted[binary_column][stroke_data_formatted[binary_column] == 0] <- "No"
+  stroke_data_formatted[binary_column][stroke_data_formatted[binary_column] == 1] <- "Yes"
+}
 
+stroke_data_formatted$work_type <- str_replace_all(stroke_data_formatted$work_type, c("children" = "Child",
+                                                                                      "Govt_job" = "Government job",
+                                                                                      "Never_worked" = "Never worked"))
+stroke_data_formatted$smoking_status <- str_replace_all(stroke_data_formatted$smoking_status, c("never smoked" = "Never smoker",
+                                                                                                "smokes" = "Current smoker",
+                                                                                                "formerly smoked" = "Former smoker"))

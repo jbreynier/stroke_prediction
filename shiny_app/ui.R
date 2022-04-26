@@ -7,6 +7,7 @@ ui <- fluidPage(
                   type = "tabs",
                   tabPanel("Data Exploration", plotOutput("exploration_plot", width = "100%")),
                   tabPanel("Regression", list(tableOutput("regression_table"),
+                                              br(),
                                               uiOutput("dynamic_inputs_regression")
                                               # fluidRow(column(6, selectInput(inputId = "test_input1",
                                               #                                label = strong("Test"),

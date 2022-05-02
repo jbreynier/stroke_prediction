@@ -5,20 +5,31 @@ ui <- fluidPage(
     mainPanel(
       tabsetPanel(id = "main_tab",
                   type = "tabs",
-                  tabPanel("Data Exploration", plotOutput("exploration_plot", width = "100%")),
-                  tabPanel("Regression", list(tableOutput("regression_table"),
+                  tabPanel("Data Exploration", list(br(),
+                                                    plotOutput("exploration_plot", width = "100%"))),
+                  tabPanel("Regression", list(h4(strong("Model information:")),
+                                              dataTableOutput("regression_table"),
                                               br(),
-                                              uiOutput("dynamic_inputs_regression")
-                                              # fluidRow(column(6, selectInput(inputId = "test_input1",
-                                              #                                label = strong("Test"),
-                                              #                                choices = c("Histogram", "Feature correlation", "Clustering"),
-                                              #                                multiple = FALSE)),
-                                              #          column(6, selectInput(inputId = "test_input2",
-                                              #                                label = strong("Test"),
-                                              #                                choices = c("Histogram", "Feature correlation", "Clustering"),
-                                              #                                multiple = FALSE)))
+                                              br(),
+                                              h4(strong("Prediction:")),
+                                              uiOutput("dynamic_inputs_regression"),
+                                              br(),
+                                              fluidRow(column(12, align="center", actionButton("predict_button_regression", label = "predict"))),
+                                              br(),
+                                              fluidRow(column(12, align="center", textOutput("regression_prediction_txt"))),
+                                              br()
                                               )),
-                  tabPanel("Decision Tree", plotOutput("decision_tree_plot", width = "100%")),
+                  tabPanel("Decision Tree", list(h4(strong("Model information:")),
+                                                 plotOutput("decision_tree_plot", width = "100%"),
+                                                 br(),
+                                                 h4(strong("Prediction:")),
+                                                 uiOutput("dynamic_inputs_tree"),
+                                                 br(),
+                                                 fluidRow(column(12, align="center", actionButton("predict_button_tree", label = "predict"))),
+                                                 br(),
+                                                 fluidRow(column(12, align="center", textOutput("tree_prediction_txt"))),
+                                                 br()
+                                                 )),
                   
       )
     ),
@@ -54,10 +65,22 @@ ui <- fluidPage(
       conditionalPanel(condition = "input.main_tab == 'Regression'",
                        selectInput(inputId = "regression_features",
                                    label = strong("Features"),
-                                   choices = list_features_formatted,
-                                   selected = list_features_formatted,
+                                   choices = list_features_formatted[1:length(list_features_formatted)-1],
+                                   selected = list_features_formatted[1:length(list_features_formatted)-1],
                                    multiple = TRUE)),
-      
+      conditionalPanel(condition = "input.main_tab == 'Decision Tree'",
+                       selectInput(inputId = "tree_features",
+                                   label = strong("Features"),
+                                   choices = list_features_formatted[1:length(list_features_formatted)-1],
+                                   selected = list_features_formatted[1:length(list_features_formatted)-1],
+                                   multiple = TRUE)),
+      conditionalPanel(condition = "input.main_tab == 'Decision Tree'",
+                       sliderInput(inputId = "max_depth",
+                                   label = strong("Max depth"),
+                                   min = 3,
+                                   max = 6,
+                                   step = 1,
+                                   value = 3))
     )
   )
 )
